@@ -7,7 +7,7 @@ import { GetUserProfileUseCase } from './get-user-profile'
 let usersRepository: InMemoryUsersRepository
 let sut: GetUserProfileUseCase
 
-describe('Authenticate Use Case', (O) => {
+describe('Get User Profile Use Case', (O) => {
   beforeEach(() => {
     usersRepository = new InMemoryUsersRepository()
     sut = new GetUserProfileUseCase(usersRepository)
