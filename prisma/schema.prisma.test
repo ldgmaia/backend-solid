@@ -1,0 +1,1154 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SequelizeMeta {
+  name String @id @db.VarChar(255)
+}
+
+model appointments {
+  id                                    Int       @id @default(autoincrement())
+  date                                  DateTime  @db.Timestamptz(6)
+  user_id                               Int?
+  provider_id                           Int?
+  canceled_at                           DateTime? @db.Timestamptz(6)
+  created_at                            DateTime  @db.Timestamptz(6)
+  updated_at                            DateTime  @db.Timestamptz(6)
+  users_appointments_provider_idTousers users?    @relation("appointments_provider_idTousers", fields: [provider_id], references: [id])
+  users_appointments_user_idTousers     users?    @relation("appointments_user_idTousers", fields: [user_id], references: [id])
+}
+
+model asset_diagnostic {
+  id                               Int                   @id @default(autoincrement())
+  serial_number                    String                @db.VarChar(255)
+  diagnostic_date                  DateTime              @db.Timestamptz(6)
+  user_id                          Int
+  active                           Boolean
+  company_grade                    String?               @db.VarChar(255)
+  certified_grade                  String?               @db.VarChar(255)
+  cosmetics_screws                 String?               @db.VarChar(255)
+  cosmetics_ac_adapter             String?               @db.VarChar(255)
+  cosmetics_stylus                 String?               @db.VarChar(255)
+  cosmetics_battery                String?               @db.VarChar(255)
+  cosmetics_screen                 String?               @db.VarChar(255)
+  cosmetics_covers                 String?               @db.VarChar(255)
+  cosmetics_tether                 String?               @db.VarChar(255)
+  function_storage                 String?               @db.VarChar(255)
+  function_storage_extended        Boolean?
+  function_ram                     String?               @db.VarChar(255)
+  function_mousepad                String?               @db.VarChar(255)
+  function_usb                     String?               @db.VarChar(255)
+  function_wlan                    String?               @db.VarChar(255)
+  function_bluetooth               String?               @db.VarChar(255)
+  function_audio                   String?               @db.VarChar(255)
+  function_keyboard                String?               @db.VarChar(255)
+  function_battery                 String?               @db.VarChar(255)
+  function_optical_drive           String?               @db.VarChar(255)
+  function_wwan                    String?               @db.VarChar(255)
+  function_gps                     String?               @db.VarChar(255)
+  function_camera                  String?               @db.VarChar(255)
+  function_fingerprint             String?               @db.VarChar(255)
+  function_smartcard               String?               @db.VarChar(255)
+  function_barcode_reader          String?               @db.VarChar(255)
+  function_cfc2_bios_update        String?               @db.VarChar(255)
+  function_drivers_installed       String?               @db.VarChar(255)
+  function_operating_system        String?               @db.VarChar(255)
+  function_windows_activation      Boolean?
+  function_coa_report              String?               @db.VarChar(255)
+  function_diagnostic_utility      String?               @db.VarChar(255)
+  created_at                       DateTime              @db.Timestamptz(6)
+  updated_at                       DateTime              @db.Timestamptz(6)
+  cosmetics_visual_appearance      String?               @db.VarChar(255)
+  cosmetics_label_condition        String?               @db.VarChar(255)
+  cosmetics_dents_scratches        String?               @db.VarChar(255)
+  cosmetics_missing_parts          Boolean?
+  cosmetics_cleaned                Boolean?
+  cosmetics_discoloration          String?               @db.VarChar(255)
+  cosmetics_latches_hinges_damaged Boolean?
+  cosmetics_packaging              String?               @db.VarChar(255)
+  function_recovery_media          String?               @db.VarChar(255)
+  function_graphics_card           String?               @db.VarChar(255)
+  function_screen                  String?               @db.VarChar(255)
+  inventory_items_id               Int?
+  result_wiping_report             String?               @db.VarChar(255)
+  cosmetics_cracks                 String?               @db.VarChar(255)
+  bios_password                    String?               @db.VarChar(255)
+  function_keyboard_ports          String?               @db.VarChar(255)
+  function_storage_2               String?               @db.VarChar(255)
+  function_storage_extended_2      String?               @db.VarChar(255)
+  function_ram_2                   String?               @db.VarChar(255)
+  function_cpu                     String?               @db.VarChar(255)
+  inventory_items                  inventory_items?      @relation(fields: [inventory_items_id], references: [id])
+  users                            users                 @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  inventory_items_log              inventory_items_log[]
+
+  @@unique([diagnostic_date, serial_number], map: "asset_diagnostic_diagnostic_date_serial_number")
+  @@index([serial_number, active], map: "asset_diagnostic_serial_number_active")
+}
+
+model branches {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique @db.VarChar(255)
+  address1        String?           @db.VarChar(255)
+  city            String?           @db.VarChar(255)
+  state           String?           @db.VarChar(255)
+  country         String?           @db.VarChar(255)
+  zip_code        String?           @db.VarChar(255)
+  active          Boolean?
+  created_at      DateTime          @db.Timestamptz(6)
+  updated_at      DateTime          @db.Timestamptz(6)
+  inventory       inventory[]
+  inventory_items inventory_items[]
+}
+
+model brands {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model categories {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model conditions {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model cosmetic_screen_options {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(255)
+  severity   String   @db.VarChar(255)
+  active     Boolean
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model cost_breakdown {
+  id                   Int                @id @default(autoincrement())
+  cost                 Decimal            @db.Decimal(8, 2)
+  inventory_items_id   Int
+  description          String             @db.VarChar(255)
+  replacement_parts_id Int?
+  created_at           DateTime           @db.Timestamptz(6)
+  updated_at           DateTime           @db.Timestamptz(6)
+  cost_usd             Decimal?           @db.Decimal(8, 2)
+  po_currency          String?            @db.VarChar(255)
+  inventory_items      inventory_items    @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+  replacement_parts    replacement_parts? @relation(fields: [replacement_parts_id], references: [id])
+}
+
+model cpus {
+  id         Int      @id @default(autoincrement())
+  brand      String   @db.VarChar(255)
+  number     String   @db.VarChar(255)
+  gen        String   @db.VarChar(255)
+  speed      String   @db.VarChar(255)
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+  items      items[]
+}
+
+model customers {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @db.VarChar(255)
+  phone             String?  @db.VarChar(255)
+  email             String?  @db.VarChar(255)
+  created_at        DateTime @db.Timestamptz(6)
+  updated_at        DateTime @db.Timestamptz(6)
+  company           String?  @db.VarChar(255)
+  street1           String?  @db.VarChar(255)
+  street2           String?  @db.VarChar(255)
+  city              String?  @db.VarChar(255)
+  postal_code       String?  @db.VarChar(255)
+  state             String?  @db.VarChar(255)
+  street3           String?  @db.VarChar(255)
+  country           String?  @db.VarChar(255)
+  residential       Boolean?
+  address_verified  String?  @db.VarChar(255)
+  customer_username String?  @db.VarChar(255)
+  orders            orders[]
+}
+
+model departments {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(255)
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model downstream {
+  id                 Int                  @id @default(autoincrement())
+  shipped_date       DateTime?            @db.Timestamptz(6)
+  status             String?              @db.VarChar(255)
+  file_id            Int?
+  supplier_id        Int?
+  created_at         DateTime             @db.Timestamptz(6)
+  updated_at         DateTime             @db.Timestamptz(6)
+  files              files?               @relation(fields: [file_id], references: [id])
+  suppliers          suppliers?           @relation(fields: [supplier_id], references: [id])
+  downstream_items   downstream_items[]
+  downstream_pallets downstream_pallets[]
+}
+
+model downstream_items {
+  id                 Int              @id @default(autoincrement())
+  previous_status    String?          @db.VarChar(255)
+  downstream_id      Int?
+  user_id            Int
+  inventory_items_id Int?
+  created_at         DateTime         @db.Timestamptz(6)
+  updated_at         DateTime         @db.Timestamptz(6)
+  downstream         downstream?      @relation(fields: [downstream_id], references: [id], onDelete: Cascade)
+  inventory_items    inventory_items? @relation(fields: [inventory_items_id], references: [id])
+  users              users            @relation(fields: [user_id], references: [id], onDelete: SetNull)
+
+  @@unique([downstream_id, inventory_items_id])
+}
+
+model downstream_pallets {
+  id            Int         @id @default(autoincrement())
+  description   String?     @db.VarChar(4000)
+  weight        Decimal?    @db.Decimal(10, 3)
+  downstream_id Int?
+  created_at    DateTime    @db.Timestamptz(6)
+  updated_at    DateTime    @db.Timestamptz(6)
+  downstream    downstream? @relation(fields: [downstream_id], references: [id], onDelete: Cascade)
+}
+
+model exchange_rate_cad_to {
+  id         Int      @id @default(autoincrement())
+  date       DateTime @db.Timestamptz(6)
+  usd        Decimal  @db.Decimal(10, 6)
+  mxn        Decimal  @db.Decimal(10, 6)
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model files {
+  id                                                           Int                  @id @default(autoincrement())
+  name                                                         String               @db.VarChar(255)
+  path                                                         String?              @unique @db.VarChar(255)
+  created_at                                                   DateTime             @db.Timestamptz(6)
+  updated_at                                                   DateTime             @db.Timestamptz(6)
+  downstream                                                   downstream[]
+  inventory_items_inventory_items_battery_file_idTofiles       inventory_items[]    @relation("inventory_items_battery_file_idTofiles")
+  inventory_items_inventory_items_wiping_report_file_idTofiles inventory_items[]    @relation("inventory_items_wiping_report_file_idTofiles")
+  receiving_pictures                                           receiving_pictures[]
+  users                                                        users[]
+}
+
+model grading_score_weights {
+  id         Int      @id @default(autoincrement())
+  status     String   @db.VarChar(255)
+  weight     Decimal  @db.Decimal(4, 2)
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model instructions {
+  id           Int      @id @default(autoincrement())
+  name         String   @db.VarChar(255)
+  field        String   @db.VarChar(255)
+  instructions String?
+  created_at   DateTime @db.Timestamptz(6)
+  updated_at   DateTime @db.Timestamptz(6)
+}
+
+model integration_log {
+  id         Int      @id @default(autoincrement())
+  service    String?  @db.VarChar(255)
+  message    String?  @db.VarChar(6000)
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model internal_order_checklists {
+  id                      Int                  @id @default(autoincrement())
+  internal_order_items_id Int
+  internal_order_id       Int
+  technician_id           Int
+  inventory_items_id      Int
+  notes                   String?              @db.VarChar(4000)
+  created_at              DateTime             @db.Timestamptz(6)
+  updated_at              DateTime             @db.Timestamptz(6)
+  internal_orders         internal_orders      @relation(fields: [internal_order_id], references: [id], onDelete: SetNull)
+  internal_order_items    internal_order_items @relation(fields: [internal_order_items_id], references: [id], onDelete: SetNull)
+  inventory_items         inventory_items      @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+  technicians             technicians          @relation(fields: [technician_id], references: [id], onDelete: SetNull)
+}
+
+model internal_order_items {
+  id                        Int                         @id @default(autoincrement())
+  internal_order_id         Int
+  quantity                  Int
+  title                     String                      @db.VarChar(255)
+  notes                     String?                     @db.VarChar(4000)
+  created_at                DateTime                    @db.Timestamptz(6)
+  updated_at                DateTime                    @db.Timestamptz(6)
+  internal_order_checklists internal_order_checklists[]
+  internal_orders           internal_orders             @relation(fields: [internal_order_id], references: [id], onDelete: SetNull)
+}
+
+model internal_orders {
+  id                                           Int                         @id @default(autoincrement())
+  internal_order_number                        String                      @unique @db.VarChar(255)
+  creation_date                                DateTime                    @db.Timestamptz(6)
+  status                                       String                      @db.VarChar(255)
+  requested_by_id                              Int
+  notes                                        String?                     @db.VarChar(4000)
+  created_by_id                                Int
+  created_at                                   DateTime                    @db.Timestamptz(6)
+  updated_at                                   DateTime                    @db.Timestamptz(6)
+  internal_order_checklists                    internal_order_checklists[]
+  internal_order_items                         internal_order_items[]
+  users_internal_orders_created_by_idTousers   users                       @relation("internal_orders_created_by_idTousers", fields: [created_by_id], references: [id], onDelete: SetNull)
+  users_internal_orders_requested_by_idTousers users                       @relation("internal_orders_requested_by_idTousers", fields: [requested_by_id], references: [id], onDelete: SetNull)
+}
+
+model inventory {
+  id               Int      @id @default(autoincrement())
+  branch_id        Int
+  item_id          Int
+  quantity         Decimal? @db.Decimal
+  created_at       DateTime @db.Timestamptz(6)
+  updated_at       DateTime @db.Timestamptz(6)
+  type             String?  @db.VarChar(255)
+  minimum_quantity Int?
+  send_email       Boolean?
+  bin_quantity     Int?
+  branches         branches @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+  items            items    @relation(fields: [item_id], references: [id], onDelete: SetNull)
+
+  @@unique([branch_id, item_id])
+}
+
+model inventory_assessment {
+  id                    Int                 @id @default(autoincrement())
+  receiving_item_id     Int
+  inventory_items_id    Int
+  inventory_item_log_id Int
+  created_at            DateTime            @db.Timestamptz(6)
+  updated_at            DateTime            @db.Timestamptz(6)
+  inventory_items_log   inventory_items_log @relation(fields: [inventory_item_log_id], references: [id], onDelete: SetNull)
+  inventory_items       inventory_items     @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+  receiving_items       receiving_items     @relation(fields: [receiving_item_id], references: [id], onDelete: SetNull)
+}
+
+model inventory_audit {
+  id                    Int                     @id @default(autoincrement())
+  search_type           String                  @db.VarChar(255)
+  search_text           String                  @db.VarChar(255)
+  status                String                  @db.VarChar(255)
+  user_id               Int
+  created_at            DateTime                @db.Timestamptz(6)
+  updated_at            DateTime                @db.Timestamptz(6)
+  users                 users                   @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  inventory_audit_items inventory_audit_items[]
+}
+
+model inventory_audit_items {
+  id                                                Int              @id @default(autoincrement())
+  serial_number                                     String           @db.VarChar(255)
+  part_number                                       String?          @db.VarChar(255)
+  status                                            String?          @db.VarChar(255)
+  action                                            String?          @db.VarChar(255)
+  date_action                                       DateTime         @db.Timestamptz(6)
+  notes                                             String?          @db.VarChar(9999)
+  inventory_audit_id                                Int?
+  user_id_create                                    Int
+  user_id_action                                    Int?
+  created_at                                        DateTime         @db.Timestamptz(6)
+  updated_at                                        DateTime         @db.Timestamptz(6)
+  inventory_audit                                   inventory_audit? @relation(fields: [inventory_audit_id], references: [id], onDelete: Cascade)
+  users_inventory_audit_items_user_id_actionTousers users?           @relation("inventory_audit_items_user_id_actionTousers", fields: [user_id_action], references: [id])
+  users_inventory_audit_items_user_id_createTousers users            @relation("inventory_audit_items_user_id_createTousers", fields: [user_id_create], references: [id], onDelete: SetNull)
+}
+
+model inventory_history {
+  id                 Int              @id @default(autoincrement())
+  date               DateTime         @db.Timestamptz(6)
+  id_reference       String           @db.VarChar(255)
+  route              String           @db.VarChar(255)
+  description        String           @db.VarChar(255)
+  user_id            Int
+  inventory_items_id Int?
+  created_at         DateTime         @db.Timestamptz(6)
+  updated_at         DateTime         @db.Timestamptz(6)
+  notes              String?          @db.VarChar(255)
+  inventory_items    inventory_items? @relation(fields: [inventory_items_id], references: [id])
+  users              users            @relation(fields: [user_id], references: [id], onDelete: SetNull)
+}
+
+model inventory_items {
+  id                                                                                                     Int                           @id @default(autoincrement())
+  serial_number                                                                                          String                        @unique @db.VarChar(255)
+  hours                                                                                                  Decimal?                      @db.Decimal(6, 0)
+  grade                                                                                                  String?                       @db.VarChar(255)
+  touch                                                                                                  String?                       @db.VarChar(255)
+  display                                                                                                String?                       @db.VarChar(255)
+  description                                                                                            String?                       @db.VarChar(4000)
+  stylus                                                                                                 String?                       @db.VarChar(255)
+  wlan                                                                                                   String?                       @db.VarChar(255)
+  wwan                                                                                                   String?                       @db.VarChar(255)
+  camera                                                                                                 String?                       @db.VarChar(255)
+  bluetooth                                                                                              String?                       @db.VarChar(255)
+  battery                                                                                                String?                       @db.VarChar(255)
+  dvd_drive                                                                                              String?                       @db.VarChar(255)
+  gps                                                                                                    String?                       @db.VarChar(255)
+  processed_by                                                                                           String?                       @db.VarChar(255)
+  condition                                                                                              String?                       @db.VarChar(255)
+  storage                                                                                                String?                       @db.VarChar(255)
+  ram                                                                                                    String?                       @db.VarChar(255)
+  keyboard_type                                                                                          String?                       @db.VarChar(255)
+  operating_system                                                                                       String?                       @db.VarChar(255)
+  item_id                                                                                                Int
+  branch_id                                                                                              Int
+  created_at                                                                                             DateTime                      @db.Timestamptz(6)
+  updated_at                                                                                             DateTime                      @db.Timestamptz(6)
+  status                                                                                                 String?                       @db.VarChar(255)
+  cost                                                                                                   String?                       @db.VarChar(255)
+  supplier                                                                                               String?                       @db.VarChar(255)
+  location                                                                                               String?                       @db.VarChar(255)
+  is_processed                                                                                           Boolean?
+  is_ready                                                                                               Boolean?
+  supplier_id                                                                                            Int?
+  ac_adapter                                                                                             String?                       @db.VarChar(255)
+  ac_adapter_amp                                                                                         String?                       @db.VarChar(255)
+  coa_reported                                                                                           String?                       @db.VarChar(255)
+  original_coa                                                                                           String?                       @db.VarChar(255)
+  storage_health                                                                                         String?                       @db.VarChar(255)
+  usb_ports                                                                                              String?                       @db.VarChar(255)
+  windows_activated                                                                                      String?                       @db.VarChar(255)
+  wwan_model                                                                                             String?                       @db.VarChar(255)
+  cosmetic_screen                                                                                        String?                       @db.VarChar(255)
+  storage_serial_number                                                                                  String?                       @db.VarChar(255)
+  graphics_card                                                                                          String?                       @db.VarChar(255)
+  receiving_item_id                                                                                      Int?
+  post_result                                                                                            String?                       @db.VarChar(255)
+  received_by                                                                                            Int?
+  battery_item_id                                                                                        Int?
+  ac_adapter_item_id                                                                                     Int?
+  battery_file_id                                                                                        Int?
+  wiping_report_file_id                                                                                  Int?
+  keyboard_ports                                                                                         String?                       @db.VarChar(255)
+  keyboard_type_id                                                                                       Int?
+  ram_serial_number                                                                                      String?                       @db.VarChar(255)
+  storage_serial_number_2                                                                                String?                       @db.VarChar(255)
+  storage_2                                                                                              String?                       @db.VarChar(255)
+  ram_2                                                                                                  String?                       @db.VarChar(255)
+  storage_health_2                                                                                       String?                       @db.VarChar(255)
+  ram_serial_number_2                                                                                    String?                       @db.VarChar(255)
+  asset_diagnostic                                                                                       asset_diagnostic[]
+  cost_breakdown                                                                                         cost_breakdown[]
+  downstream_items                                                                                       downstream_items[]
+  internal_order_checklists                                                                              internal_order_checklists[]
+  inventory_assessment                                                                                   inventory_assessment[]
+  inventory_history                                                                                      inventory_history[]
+  items_inventory_items_ac_adapter_item_idToitems                                                        items?                        @relation("inventory_items_ac_adapter_item_idToitems", fields: [ac_adapter_item_id], references: [id])
+  files_inventory_items_battery_file_idTofiles                                                           files?                        @relation("inventory_items_battery_file_idTofiles", fields: [battery_file_id], references: [id])
+  items_inventory_items_battery_item_idToitems                                                           items?                        @relation("inventory_items_battery_item_idToitems", fields: [battery_item_id], references: [id])
+  branches                                                                                               branches                      @relation(fields: [branch_id], references: [id], onDelete: SetNull)
+  items_inventory_items_item_idToitems                                                                   items                         @relation("inventory_items_item_idToitems", fields: [item_id], references: [id], onDelete: SetNull)
+  users                                                                                                  users?                        @relation(fields: [received_by], references: [id])
+  receiving_items                                                                                        receiving_items?              @relation(fields: [receiving_item_id], references: [id])
+  suppliers                                                                                              suppliers?                    @relation(fields: [supplier_id], references: [id])
+  files_inventory_items_wiping_report_file_idTofiles                                                     files?                        @relation("inventory_items_wiping_report_file_idTofiles", fields: [wiping_report_file_id], references: [id])
+  inventory_items_log                                                                                    inventory_items_log[]
+  inventory_log                                                                                          inventory_log[]
+  order_checklist                                                                                        order_checklist[]
+  receiving_items_attachments_receiving_items_attachments_inventory_items_id_attachmentToinventory_items receiving_items_attachments[] @relation("receiving_items_attachments_inventory_items_id_attachmentToinventory_items")
+  receiving_items_attachments_receiving_items_attachments_inventory_items_id_deviceToinventory_items     receiving_items_attachments[] @relation("receiving_items_attachments_inventory_items_id_deviceToinventory_items")
+  receiving_items_parts                                                                                  receiving_items_parts[]
+  replacement_parts                                                                                      replacement_parts[]
+
+  @@index([serial_number], map: "inventory_items_serial_number")
+}
+
+model inventory_items_log {
+  id                      Int                    @id @default(autoincrement())
+  serial_number           String                 @db.VarChar(255)
+  hours                   Decimal?               @db.Decimal(6, 0)
+  grade                   String?                @db.VarChar(255)
+  touch                   String?                @db.VarChar(255)
+  display                 String?                @db.VarChar(255)
+  description             String?                @db.VarChar(255)
+  stylus                  String?                @db.VarChar(255)
+  wlan                    String?                @db.VarChar(255)
+  wwan                    String?                @db.VarChar(255)
+  camera                  String?                @db.VarChar(255)
+  bluetooth               String?                @db.VarChar(255)
+  battery                 String?                @db.VarChar(255)
+  dvd_drive               String?                @db.VarChar(255)
+  gps                     String?                @db.VarChar(255)
+  processed_by            String?                @db.VarChar(255)
+  condition               String?                @db.VarChar(255)
+  storage                 String?                @db.VarChar(255)
+  ram                     String?                @db.VarChar(255)
+  keyboard_type           String?                @db.VarChar(255)
+  operating_system        String?                @db.VarChar(255)
+  item_id                 Int?
+  status                  String?                @db.VarChar(255)
+  location                String?                @db.VarChar(255)
+  is_processed            Boolean?
+  ac_adapter              String?                @db.VarChar(255)
+  ac_adapter_amp          String?                @db.VarChar(255)
+  coa_reported            String?                @db.VarChar(255)
+  original_coa            String?                @db.VarChar(255)
+  storage_health          String?                @db.VarChar(255)
+  usb_ports               String?                @db.VarChar(255)
+  windows_activated       String?                @db.VarChar(255)
+  wwan_model              String?                @db.VarChar(255)
+  cosmetic_screen         String?                @db.VarChar(255)
+  storage_serial_number   String?                @db.VarChar(255)
+  graphics_card           String?                @db.VarChar(255)
+  post_result             String?                @db.VarChar(255)
+  inventory_items_id      Int
+  asset_diagnostic_id     Int?
+  created_at              DateTime               @db.Timestamptz(6)
+  updated_at              DateTime               @db.Timestamptz(6)
+  ac_adapter_item_id      Int?
+  battery_item_id         Int?
+  battery_file_id         Int?
+  wiping_report_file_id   Int?
+  keyboard_ports          String?                @db.VarChar(255)
+  keyboard_type_id        Int?
+  ram_serial_number       String?                @db.VarChar(255)
+  storage_serial_number_2 String?                @db.VarChar(255)
+  storage_2               String?                @db.VarChar(255)
+  storage_health_2        String?                @db.VarChar(255)
+  ram_2                   String?                @db.VarChar(255)
+  ram_serial_number_2     String?                @db.VarChar(255)
+  inventory_assessment    inventory_assessment[]
+  asset_diagnostic        asset_diagnostic?      @relation(fields: [asset_diagnostic_id], references: [id])
+  inventory_items         inventory_items        @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+}
+
+model inventory_log {
+  id                 Int              @id @default(autoincrement())
+  log_id             String           @db.VarChar(255)
+  item_id            Int
+  inventory_items_id Int?
+  routine            String           @db.VarChar(255)
+  error              String?          @db.VarChar(255)
+  action             String?          @db.VarChar(255)
+  previous_data      String?          @db.VarChar(255)
+  new_data           String?          @db.VarChar(255)
+  created_at         DateTime         @db.Timestamptz(6)
+  updated_at         DateTime         @db.Timestamptz(6)
+  user_id            Int
+  receiving_item_id  Int?
+  inventory_items    inventory_items? @relation(fields: [inventory_items_id], references: [id])
+  items              items            @relation(fields: [item_id], references: [id], onDelete: SetNull)
+  receiving_items    receiving_items? @relation(fields: [receiving_item_id], references: [id])
+  users              users            @relation(fields: [user_id], references: [id], onDelete: SetNull)
+}
+
+model item_base_cost {
+  id              Int      @id @default(autoincrement())
+  item_id         Int
+  cost            Decimal  @db.Decimal(8, 2)
+  new_average_log String?  @db.VarChar(255)
+  created_at      DateTime @db.Timestamptz(6)
+  updated_at      DateTime @db.Timestamptz(6)
+  items           items    @relation(fields: [item_id], references: [id], onDelete: SetNull)
+}
+
+model items {
+  id                                                        Int                  @id @default(autoincrement())
+  sku                                                       String               @unique @db.VarChar(255)
+  name                                                      String               @db.VarChar(4000)
+  description                                               String?              @db.VarChar(4000)
+  model                                                     String?              @db.VarChar(255)
+  part_number                                               String?              @unique @db.VarChar(255)
+  weight                                                    Decimal?             @db.Decimal(8, 2)
+  length                                                    Decimal?             @db.Decimal(4, 2)
+  width                                                     Decimal?             @db.Decimal(4, 2)
+  height                                                    Decimal?             @db.Decimal(4, 2)
+  barcode                                                   String?              @db.VarChar(255)
+  created_at                                                DateTime             @db.Timestamptz(6)
+  updated_at                                                DateTime             @db.Timestamptz(6)
+  category_id                                               Int?
+  subcategory_id                                            Int?
+  brand_id                                                  Int?
+  manufacturer_id                                           Int?
+  condition_id                                              Int?
+  storage_id                                                Int?
+  cpu_id                                                    Int?
+  ram_id                                                    Int?
+  operating_system_id                                       Int?
+  keyboard_type_id                                          Int?
+  screen_size_id                                            Int?
+  screen_type_id                                            Int?
+  screen_resolution_id                                      Int?
+  screen_technology_id                                      Int?
+  cam                                                       Boolean?
+  gps                                                       Boolean?
+  finger_print                                              Boolean?
+  location_id                                               Int?
+  is_active                                                 Boolean?             @default(true)
+  inventory                                                 inventory[]
+  inventory_items_inventory_items_ac_adapter_item_idToitems inventory_items[]    @relation("inventory_items_ac_adapter_item_idToitems")
+  inventory_items_inventory_items_battery_item_idToitems    inventory_items[]    @relation("inventory_items_battery_item_idToitems")
+  inventory_items_inventory_items_item_idToitems            inventory_items[]    @relation("inventory_items_item_idToitems")
+  inventory_log                                             inventory_log[]
+  item_base_cost                                            item_base_cost[]
+  brands                                                    brands?              @relation(fields: [brand_id], references: [id])
+  categories                                                categories?          @relation(fields: [category_id], references: [id])
+  conditions                                                conditions?          @relation(fields: [condition_id], references: [id])
+  cpus                                                      cpus?                @relation(fields: [cpu_id], references: [id])
+  keyboard_types                                            keyboard_types?      @relation(fields: [keyboard_type_id], references: [id])
+  locations                                                 locations?           @relation(fields: [location_id], references: [id])
+  manufacturers                                             manufacturers?       @relation(fields: [manufacturer_id], references: [id])
+  operating_systems                                         operating_systems?   @relation(fields: [operating_system_id], references: [id])
+  rams                                                      rams?                @relation(fields: [ram_id], references: [id])
+  screen_resolutions                                        screen_resolutions?  @relation(fields: [screen_resolution_id], references: [id])
+  screen_sizes                                              screen_sizes?        @relation(fields: [screen_size_id], references: [id])
+  screen_technologies                                       screen_technologies? @relation(fields: [screen_technology_id], references: [id])
+  screen_types                                              screen_types?        @relation(fields: [screen_type_id], references: [id])
+  storages                                                  storages?            @relation(fields: [storage_id], references: [id])
+  subcategories                                             subcategories?       @relation(fields: [subcategory_id], references: [id])
+  listings                                                  listings?
+  order_checklist                                           order_checklist[]
+  replacement_parts                                         replacement_parts[]
+}
+
+model keyboard_types {
+  id              Int      @id @default(autoincrement())
+  type            String   @db.VarChar(255)
+  rubber          Boolean  @default(false)
+  water_resistant Boolean  @default(false)
+  language        String?  @db.VarChar(255)
+  created_at      DateTime @db.Timestamptz(6)
+  updated_at      DateTime @db.Timestamptz(6)
+  items           items[]
+}
+
+model listings {
+  id                  Int                @id @default(autoincrement())
+  item_id             Int                @unique
+  variation_sku       String             @unique @db.VarChar(255)
+  storage_id          Int?
+  ram_id              Int?
+  operating_system_id Int?
+  stylus              String?            @db.VarChar(255)
+  bluetooth           String?            @db.VarChar(255)
+  wireless_lan        String?            @db.VarChar(255)
+  battery             String?            @db.VarChar(255)
+  ac_adapter          String?            @db.VarChar(255)
+  grade               String?            @db.VarChar(255)
+  price_usd           Decimal?           @db.Decimal(7, 2)
+  price_cad           Decimal?           @db.Decimal(7, 2)
+  price_usd_wholesale Decimal?           @db.Decimal(7, 2)
+  details             String?            @db.VarChar(255)
+  created_at          DateTime           @db.Timestamptz(6)
+  updated_at          DateTime           @db.Timestamptz(6)
+  items               items              @relation(fields: [item_id], references: [id], onDelete: SetNull)
+  operating_systems   operating_systems? @relation(fields: [operating_system_id], references: [id])
+  rams                rams?              @relation(fields: [ram_id], references: [id])
+  storages            storages?          @relation(fields: [storage_id], references: [id])
+}
+
+model locations {
+  id                Int      @id @default(autoincrement())
+  name              String   @db.VarChar(255)
+  description       String?  @db.VarChar(255)
+  created_at        DateTime @db.Timestamptz(6)
+  updated_at        DateTime @db.Timestamptz(6)
+  physical_location Boolean?
+  group             String?  @db.VarChar(255)
+  items             items[]
+}
+
+model logs {
+  id            Int      @id @default(autoincrement())
+  log_id        String   @db.VarChar(255)
+  routine       String   @db.VarChar(255)
+  action        String   @db.VarChar(255)
+  previous_data String?  @db.VarChar(9999)
+  new_data      String?  @db.VarChar(9999)
+  user_id       Int
+  reference_id  Int?
+  created_at    DateTime @db.Timestamptz(6)
+  updated_at    DateTime @db.Timestamptz(6)
+  users         users    @relation(fields: [user_id], references: [id], onDelete: SetNull)
+}
+
+model manufacturers {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model operating_systems {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique @db.VarChar(255)
+  description String?    @db.VarChar(255)
+  created_at  DateTime   @db.Timestamptz(6)
+  updated_at  DateTime   @db.Timestamptz(6)
+  active      Boolean?
+  items       items[]
+  listings    listings[]
+}
+
+model order_checklist {
+  id                  Int                @id @default(autoincrement())
+  order_num           String             @db.VarChar(255)
+  technician_id       Int
+  serial_number       String?            @db.VarChar(255)
+  created_at          DateTime           @db.Timestamptz(6)
+  updated_at          DateTime           @db.Timestamptz(6)
+  order_id            Int?
+  inventory_items_id  Int?
+  is_qc_approved      Boolean?
+  order_items_id      Int?
+  item_id             Int?
+  notes               String?            @db.VarChar(255)
+  work_instruction_id Int?
+  qc_technician_id    Int?
+  inventory_items     inventory_items?   @relation(fields: [inventory_items_id], references: [id])
+  items               items?             @relation(fields: [item_id], references: [id])
+  order_items         order_items?       @relation(fields: [order_items_id], references: [id])
+  users               users?             @relation(fields: [qc_technician_id], references: [id])
+  technicians         technicians        @relation(fields: [technician_id], references: [id], onDelete: SetNull)
+  work_instructions   work_instructions? @relation(fields: [work_instruction_id], references: [id])
+
+  @@index([serial_number], map: "order_checklist_serial_number")
+}
+
+model order_items {
+  id                        Int               @id @default(autoincrement())
+  order_id                  Int
+  item_id                   Int?
+  unit_price                Decimal?          @db.Decimal(7, 2)
+  quantity                  Decimal?          @db.Decimal
+  total_price               Decimal?          @db.Decimal(7, 2)
+  created_at                DateTime          @db.Timestamptz(6)
+  updated_at                DateTime          @db.Timestamptz(6)
+  title                     String?           @db.VarChar(500)
+  asin                      String?           @db.VarChar(255)
+  seller_sku                String?           @db.VarChar(255)
+  item_tax                  Decimal?          @db.Decimal(8, 2)
+  promotion_discount        Decimal?          @db.Decimal(8, 2)
+  promotion_discount_tax    Decimal?          @db.Decimal(8, 2)
+  notes                     String?           @db.VarChar(4000)
+  rbms_notes                String?           @db.VarChar(4000)
+  is_rbms_item              Boolean           @default(false)
+  shipstation_order_item_id BigInt?
+  image_url                 String?           @db.VarChar(255)
+  order_checklist           order_checklist[]
+  orders                    orders            @relation(fields: [order_id], references: [id], onDelete: SetNull)
+
+  @@unique([order_id, shipstation_order_item_id], map: "order_items_unique_key")
+}
+
+model order_shipment {
+  id                      Int       @id @default(autoincrement())
+  order_id                Int
+  shipstation_shipment_id BigInt
+  shipstation_order_key   String    @db.VarChar(255)
+  label_data              Bytes?
+  form_data               Bytes?
+  voided                  Boolean
+  void_date               DateTime? @db.Timestamptz(6)
+  created_at              DateTime  @db.Timestamptz(6)
+  updated_at              DateTime  @db.Timestamptz(6)
+  label_created_by        String?   @db.VarChar(255)
+  orders                  orders    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+}
+
+model orders {
+  id                         Int              @id @default(autoincrement())
+  order_num                  String           @db.VarChar(255)
+  store_id                   Int?
+  customer_id                Int?
+  creation_date              DateTime?        @db.Timestamptz(6)
+  status                     String?          @db.VarChar(255)
+  details                    String?          @db.VarChar(2000)
+  created_at                 DateTime         @db.Timestamptz(6)
+  updated_at                 DateTime         @db.Timestamptz(6)
+  order_date                 DateTime?        @db.Timestamptz(6)
+  modify_date                DateTime?        @db.Timestamptz(6)
+  payment_date               DateTime?        @db.Timestamptz(6)
+  ship_by_date               DateTime?        @db.Timestamptz(6)
+  ship_date                  DateTime?        @db.Timestamptz(6)
+  amount_paid                Decimal?         @db.Decimal
+  shipping_amount            Decimal?         @db.Decimal
+  tax_amount                 Decimal?         @db.Decimal
+  order_total                Decimal?         @db.Decimal
+  requested_shipping_service String?          @db.VarChar(255)
+  carrier_code               String?          @db.VarChar(255)
+  service_code               String?          @db.VarChar(255)
+  package_code               String?          @db.VarChar(255)
+  tracking_number            String?          @db.VarChar(255)
+  fulfillment_channel        String?          @db.VarChar(255)
+  is_business_order          Boolean?
+  shipping_cost              Decimal?         @db.Decimal(8, 2)
+  hold_until_date            DateTime?        @db.Timestamptz(6)
+  shipstation_order_id       BigInt?
+  order_items                order_items[]
+  order_shipment             order_shipment[]
+  customers                  customers?       @relation(fields: [customer_id], references: [id])
+  stores                     stores?          @relation(fields: [store_id], references: [id])
+  returns                    returns[]
+
+  @@unique([order_num, store_id], map: "orders_unique_key")
+}
+
+model other_ports_options {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(255)
+  active     Boolean?
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model params {
+  id          Int      @id @default(autoincrement())
+  service     String?  @db.VarChar(255)
+  key_param   String?  @db.VarChar(255)
+  value_param String?  @db.VarChar(4000)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+
+  @@unique([service, key_param])
+}
+
+model purchase_order_items {
+  id                     Int               @id @default(autoincrement())
+  name                   String            @db.VarChar(4000)
+  description            String?           @db.VarChar(4000)
+  quantity               Decimal           @db.Decimal
+  unit_price             Decimal           @db.Decimal
+  total                  Decimal           @db.Decimal
+  qbo_item_id            Int
+  purchase_order_id      Int
+  created_at             DateTime          @db.Timestamptz(6)
+  updated_at             DateTime          @db.Timestamptz(6)
+  purchase_order_item_id Int?
+  purchase_orders        purchase_orders   @relation(fields: [purchase_order_id], references: [id], onDelete: SetNull)
+  receiving_items        receiving_items[]
+
+  @@unique([purchase_order_id, purchase_order_item_id, description], map: "purchase_order_items_unique_key")
+}
+
+model purchase_orders {
+  id                   Int                    @id @default(autoincrement())
+  qbo_id               Int?                   @unique
+  status               String                 @db.VarChar(255)
+  po_number            String                 @unique @db.VarChar(255)
+  currency             String                 @db.VarChar(255)
+  total                Decimal                @db.Decimal
+  qbo_created_at       DateTime?              @db.Timestamptz(6)
+  qbo_updated_at       DateTime?              @db.Timestamptz(6)
+  supplier_id          Int
+  created_at           DateTime               @db.Timestamptz(6)
+  updated_at           DateTime               @db.Timestamptz(6)
+  purchase_order_items purchase_order_items[]
+  suppliers            suppliers              @relation(fields: [supplier_id], references: [id], onDelete: SetNull)
+}
+
+model rams {
+  id         Int        @id @default(autoincrement())
+  capacity   String     @db.VarChar(255)
+  type       String     @db.VarChar(255)
+  created_at DateTime   @db.Timestamptz(6)
+  updated_at DateTime   @db.Timestamptz(6)
+  items      items[]
+  listings   listings[]
+}
+
+model receiving {
+  id                 Int                  @id @default(autoincrement())
+  tracking_lading    String?              @db.VarChar(255)
+  carrier            String?              @db.VarChar(255)
+  purchase_order     String?              @db.VarChar(255)
+  supplier           String?              @db.VarChar(255)
+  parcels            String?              @db.VarChar(255)
+  notes              String?              @db.VarChar(2000)
+  created_by         String               @db.VarChar(255)
+  created_at         DateTime             @db.Timestamptz(6)
+  updated_at         DateTime             @db.Timestamptz(6)
+  rma_number         String?              @db.VarChar(255)
+  service_number     String?              @db.VarChar(255)
+  receiving_items    receiving_items[]
+  receiving_pictures receiving_pictures[]
+}
+
+model receiving_items {
+  id                          Int                           @id @default(autoincrement())
+  receiving_id                Int
+  quantity                    String?                       @db.VarChar(255)
+  description                 String?                       @db.VarChar(1000)
+  created_by                  String                        @db.VarChar(255)
+  created_at                  DateTime                      @db.Timestamptz(6)
+  updated_at                  DateTime                      @db.Timestamptz(6)
+  location                    String?                       @db.VarChar(255)
+  quantity_to_receive         Decimal?                      @db.Decimal
+  purchase_order_item_id      Int?
+  status                      String?                       @db.VarChar(255)
+  notes                       String?                       @db.VarChar(255)
+  inventory_assessment        inventory_assessment[]
+  inventory_items             inventory_items[]
+  inventory_log               inventory_log[]
+  purchase_order_items        purchase_order_items?         @relation(fields: [purchase_order_item_id], references: [id])
+  receiving                   receiving                     @relation(fields: [receiving_id], references: [id], onDelete: SetNull)
+  receiving_items_attachments receiving_items_attachments[]
+  receiving_items_parts       receiving_items_parts[]
+}
+
+model receiving_items_attachments {
+  id                                                                                         Int             @id @default(autoincrement())
+  receiving_item_id                                                                          Int
+  inventory_items_id_device                                                                  Int
+  inventory_items_id_attachment                                                              Int
+  created_at                                                                                 DateTime        @db.Timestamptz(6)
+  updated_at                                                                                 DateTime        @db.Timestamptz(6)
+  inventory_items_receiving_items_attachments_inventory_items_id_attachmentToinventory_items inventory_items @relation("receiving_items_attachments_inventory_items_id_attachmentToinventory_items", fields: [inventory_items_id_attachment], references: [id], onDelete: SetNull)
+  inventory_items_receiving_items_attachments_inventory_items_id_deviceToinventory_items     inventory_items @relation("receiving_items_attachments_inventory_items_id_deviceToinventory_items", fields: [inventory_items_id_device], references: [id], onDelete: SetNull)
+  receiving_items                                                                            receiving_items @relation(fields: [receiving_item_id], references: [id], onDelete: SetNull)
+}
+
+model receiving_items_parts {
+  id                 Int             @id @default(autoincrement())
+  receiving_item_id  Int
+  inventory_items_id Int
+  created_at         DateTime        @db.Timestamptz(6)
+  updated_at         DateTime        @db.Timestamptz(6)
+  inventory_items    inventory_items @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+  receiving_items    receiving_items @relation(fields: [receiving_item_id], references: [id], onDelete: SetNull)
+}
+
+model receiving_pictures {
+  id           Int       @id @default(autoincrement())
+  receiving_id Int
+  file_id      Int
+  created_by   String    @db.VarChar(255)
+  created_at   DateTime  @db.Timestamptz(6)
+  updated_at   DateTime  @db.Timestamptz(6)
+  files        files     @relation(fields: [file_id], references: [id], onDelete: SetNull)
+  receiving    receiving @relation(fields: [receiving_id], references: [id], onDelete: SetNull)
+}
+
+model replacement_parts {
+  id                     Int              @id @default(autoincrement())
+  inventory_items_id     Int
+  item_id                Int
+  serial_number          String?          @db.VarChar(255)
+  quantity               Int
+  inspection_item        String           @db.VarChar(255)
+  replacement_service    Boolean
+  labour_time            DateTime         @db.Timestamptz(6)
+  inventory_items_log_id Int?
+  order_num              String?          @db.VarChar(255)
+  replacement_notes      String?          @db.VarChar(255)
+  created_at             DateTime         @db.Timestamptz(6)
+  updated_at             DateTime         @db.Timestamptz(6)
+  cost_breakdown         cost_breakdown[]
+  inventory_items        inventory_items  @relation(fields: [inventory_items_id], references: [id], onDelete: SetNull)
+  items                  items            @relation(fields: [item_id], references: [id], onDelete: SetNull)
+}
+
+model returns {
+  id                Int      @id @default(autoincrement())
+  order_id          Int
+  order_num         String   @db.VarChar(255)
+  status            String?  @db.VarChar(255)
+  tracking          String?  @db.VarChar(255)
+  carrier           String?  @db.VarChar(255)
+  return_reason     String?  @db.VarChar(4000)
+  customer_wants    String?  @db.VarChar(4000)
+  customer_comments String?  @db.VarChar(4000)
+  return_status     String?  @db.VarChar(255)
+  tracking_status   String?  @db.VarChar(255)
+  action            String?  @db.VarChar(4000)
+  technician_log    String?  @db.VarChar(4000)
+  items_returned    String?  @db.VarChar(4000)
+  created_at        DateTime @db.Timestamptz(6)
+  updated_at        DateTime @db.Timestamptz(6)
+  orders            orders   @relation(fields: [order_id], references: [id], onDelete: SetNull)
+}
+
+model screen_resolutions {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model screen_sizes {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model screen_technologies {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model screen_types {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  created_at  DateTime @db.Timestamptz(6)
+  updated_at  DateTime @db.Timestamptz(6)
+  items       items[]
+}
+
+model storages {
+  id          Int        @id @default(autoincrement())
+  capacity    String     @db.VarChar(255)
+  type        String     @db.VarChar(255)
+  unit        String     @db.VarChar(255)
+  created_at  DateTime   @db.Timestamptz(6)
+  updated_at  DateTime   @db.Timestamptz(6)
+  form_factor String?    @db.VarChar(255)
+  controller  String?    @db.VarChar(255)
+  speed       String?    @db.VarChar(255)
+  items       items[]
+  listings    listings[]
+}
+
+model stores {
+  id                   Int      @id @default(autoincrement())
+  name                 String   @unique @db.VarChar(255)
+  created_at           DateTime @db.Timestamptz(6)
+  updated_at           DateTime @db.Timestamptz(6)
+  shipstation_store_id Int?
+  active               Boolean? @default(true)
+  orders               orders[]
+}
+
+model subcategories {
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique @db.VarChar(255)
+  description       String?             @db.VarChar(255)
+  created_at        DateTime            @db.Timestamptz(6)
+  updated_at        DateTime            @db.Timestamptz(6)
+  items             items[]
+  work_instructions work_instructions[]
+}
+
+model suppliers {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique @db.VarChar(255)
+  phone           String?           @db.VarChar(255)
+  email           String?           @db.VarChar(255)
+  company         String?           @db.VarChar(255)
+  street1         String?           @db.VarChar(255)
+  street2         String?           @db.VarChar(255)
+  street3         String?           @db.VarChar(255)
+  city            String?           @db.VarChar(255)
+  state           String?           @db.VarChar(255)
+  postal_code     String?           @db.VarChar(255)
+  country         String?           @db.VarChar(255)
+  created_at      DateTime          @db.Timestamptz(6)
+  updated_at      DateTime          @db.Timestamptz(6)
+  downstream      downstream[]
+  inventory_items inventory_items[]
+  purchase_orders purchase_orders[]
+}
+
+model technicians {
+  id                        Int                         @id @default(autoincrement())
+  name                      String                      @unique @db.VarChar(255)
+  phone                     String?                     @db.VarChar(255)
+  email                     String                      @db.VarChar(255)
+  created_at                DateTime                    @db.Timestamptz(6)
+  updated_at                DateTime                    @db.Timestamptz(6)
+  user_id                   Int?
+  is_active                 Boolean?                    @default(true)
+  internal_order_checklists internal_order_checklists[]
+  order_checklist           order_checklist[]
+  users                     users?                      @relation(fields: [user_id], references: [id])
+}
+
+model testttt {
+  id Int @id @default(autoincrement())
+}
+
+model users {
+  id                                                                Int                     @id @default(autoincrement())
+  name                                                              String                  @db.VarChar(255)
+  email                                                             String                  @unique @db.VarChar(255)
+  password_hash                                                     String                  @db.VarChar(255)
+  type                                                              Int                     @default(0)
+  created_at                                                        DateTime                @db.Timestamptz(6)
+  updated_at                                                        DateTime                @db.Timestamptz(6)
+  avatar_id                                                         Int?
+  active                                                            Boolean?
+  appointments_appointments_provider_idTousers                      appointments[]          @relation("appointments_provider_idTousers")
+  appointments_appointments_user_idTousers                          appointments[]          @relation("appointments_user_idTousers")
+  asset_diagnostic                                                  asset_diagnostic[]
+  downstream_items                                                  downstream_items[]
+  internal_orders_internal_orders_created_by_idTousers              internal_orders[]       @relation("internal_orders_created_by_idTousers")
+  internal_orders_internal_orders_requested_by_idTousers            internal_orders[]       @relation("internal_orders_requested_by_idTousers")
+  inventory_audit                                                   inventory_audit[]
+  inventory_audit_items_inventory_audit_items_user_id_actionTousers inventory_audit_items[] @relation("inventory_audit_items_user_id_actionTousers")
+  inventory_audit_items_inventory_audit_items_user_id_createTousers inventory_audit_items[] @relation("inventory_audit_items_user_id_createTousers")
+  inventory_history                                                 inventory_history[]
+  inventory_items                                                   inventory_items[]
+  inventory_log                                                     inventory_log[]
+  logs                                                              logs[]
+  order_checklist                                                   order_checklist[]
+  technicians                                                       technicians[]
+  files                                                             files?                  @relation(fields: [avatar_id], references: [id])
+}
+
+model warranty_specs_dic {
+  id                        Int       @id @default(autoincrement())
+  serial_number             String    @db.VarChar(255)
+  product_description       String    @db.VarChar(255)
+  code                      String    @unique @db.VarChar(255)
+  service_level_description String    @db.VarChar(255)
+  description               String    @db.VarChar(255)
+  type                      String?   @db.VarChar(255)
+  start_date                DateTime? @db.Timestamptz(6)
+  end_date                  DateTime? @db.Timestamptz(6)
+  entitlement_type          String?   @db.VarChar(255)
+  created_at                DateTime  @db.Timestamptz(6)
+  updated_at                DateTime  @db.Timestamptz(6)
+}
+
+model work_instructions {
+  id              Int               @id @default(autoincrement())
+  name            String?           @db.VarChar(255)
+  description     String?           @db.VarChar(255)
+  url             String?           @db.VarChar(255)
+  created_at      DateTime          @db.Timestamptz(6)
+  updated_at      DateTime          @db.Timestamptz(6)
+  subcategory_id  Int?
+  order_checklist order_checklist[]
+  subcategories   subcategories?    @relation(fields: [subcategory_id], references: [id])
+}
