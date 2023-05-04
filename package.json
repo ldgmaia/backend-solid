@@ -6,9 +6,13 @@
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
+    "test:create-prisma-environment": "npm link ./prisma/vitest-environment-prisma",
+    "test:install-prisma-environment": "npm link vitest-environment-prisma",
     "build": "tsup src --out-dir buildnpm",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "vitest run --dir src/use-cases",
+    "test:watch": "vitest --dir src/use-cases",
+    "pretest:e2e": "run-s test:create-prisma-environment test:install-prisma-environment",
+    "test:e2e": "vitest run --dir src/http",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   },
@@ -18,24 +22,25 @@
   "devDependencies": {
     "@rocketseat/eslint-config": "1.2.0",
     "@types/bcryptjs": "2.4.2",
-    "@types/node": "18.15.10",
-    "@vitest/coverage-c8": "0.29.8",
-    "@vitest/ui": "0.29.8",
+    "@types/node": "18.16.3",
+    "@vitest/coverage-c8": "0.31.0",
+    "@vitest/ui": "0.31.0",
     "dayjs": "1.11.7",
-    "eslint": "8.36.0",
-    "prisma": "4.11.0",
+    "eslint": "8.39.0",
+    "npm-run-all": "4.1.5",
+    "prisma": "4.13.0",
     "tsup": "6.7.0",
-    "tsx": "3.12.6",
-    "typescript": "5.0.2",
-    "vite-tsconfig-paths": "4.0.7",
-    "vitest": "0.29.8"
+    "tsx": "3.12.7",
+    "typescript": "5.0.4",
+    "vite-tsconfig-paths": "4.2.0",
+    "vitest": "0.31.0"
   },
   "dependencies": {
     "@fastify/jwt": "6.7.1",
-    "@prisma/client": "4.11.0",
+    "@prisma/client": "4.13.0",
     "bcryptjs": "2.4.3",
     "dotenv": "16.0.3",
-    "fastify": "4.15.0",
+    "fastify": "4.17.0",
     "zod": "3.21.4"
   }
 }
