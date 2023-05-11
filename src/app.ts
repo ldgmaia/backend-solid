@@ -10,7 +10,7 @@ import fastifyCookie from '@fastify/cookie'
 export const app = fastify()
 
 app.register(fastifyJwt, {
-  secret: env.JSW_SECRET,
+  secret: env.JWT_SECRET,
   cookie: {
     cookieName: 'refreshToken',
     signed: false,
